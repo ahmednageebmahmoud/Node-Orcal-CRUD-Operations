@@ -11,11 +11,19 @@ app.set('views', process.cwd() + '/src/views');
 //Tell Express What View Engin We Need To Use
 app.set("view engine", "ejs");
 //To Make Express Detect Static Files Automaticly Without Create Single Router To Each File
-app.use(expres.static(join(process.cwd(), '/src/public')));
+app.use(express.static(join(process.cwd(), '/src/public')));
 //For Parsing application/json And Set Linit To Request Body
-app.use(expres.json({ limit: '900mb' }));
+app.use(express.json({ limit: '900mb' }));
+app.use(express.urlencoded({ extended: true, limit: '900mb' }));
 
 
+
+/** Load User Module */
+require('./modules/user/router')(app);
+
+app.get('/',(req,res)=>{
+    res.render('index')
+})
 
 
 
