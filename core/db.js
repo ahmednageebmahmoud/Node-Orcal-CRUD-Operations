@@ -24,7 +24,8 @@ module.exports = {
        UserName nvarchar(150) Not NULL,
        Email nvarchar(150) Not NULL,
        Password nvarchar(150) Not NULL,
-       UserType nvarchar(150) Not NULL
+       UserType nvarchar(150) Not NULL,
+       RegisterDateTime datetime Not NULL DEFAULT GETDATE(),
     ) 
     END
     `);
@@ -39,9 +40,24 @@ module.exports = {
                Title nvarchar(max) Not NULL,
                Description nvarchar(max) Not NULL,
                FkUser_Id bigint Not NULL,
+               PostDateTime datetime Not NULL DEFAULT GETDATE(),
                FOREIGN KEY (FkUser_Id) REFERENCES Users (Id) Not NULL
             ) 
             END`);
+
+   //Create Logs Table If Not Created
+    connection.execute(`IF  NOT EXISTS (SELECT * FROM sys.objects 
+      WHERE object_id = OBJECT_ID(N'[dbo].[Logs]') AND type in (N'U'))
+      
+      BEGIN
+      CREATE TABLE [dbo].[Logs](
+         Id bigint primary key identity(1,1),
+         Description nvarchar(max) Not NULL,
+         FkUser_Id bigint Not NULL,
+         LogDateTime datetime Not NULL DEFAULT GETDATE(),
+         FOREIGN KEY (FkUser_Id) REFERENCES Users (Id) Not NULL
+      ) 
+      END`);
 
     console.log(`
             ======

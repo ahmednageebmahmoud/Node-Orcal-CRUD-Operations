@@ -14,9 +14,11 @@ class UserModuel {
     //Check From 
     if (validate.error) {
       console.log('Register Error:', validate.error);
-      return res.flash('error', 'Please Enter Full Information');
+      req.flash('error', 'Please Enter Full Information');
+      return res.redirect('/login')
     }
 
+    //Connect To DB
     var connection = await db.getConnection();
 
     // Get User From Db By Email
@@ -24,18 +26,24 @@ class UserModuel {
 
     //Cehck If Not Found
     if (!user) {
-      return res.flash('error', 'Invalid Email Or Password');
+      req.flash('error', 'Invalid Email Or Password');
+      return res.redirect('/login')
     }
 
     //Check From Password
     if (service.compare_passwords(validate.validate.password, user.Password)) {
-      return res.flash('error', 'Invalid Email Or Password');
+      req.flash('error', 'Invalid Email Or Password');
+      return res.redirect('/login')
     }
 
 
     //Login 
     req.session.userId = user.Id;
-    return req.session.save(() => {
+    return req.session.save(async () => {
+      await connection.excute(`
+      insert logs (Description,FkUser_Id) values ('${validate.validate.email} Logged In',${req.session.userId})
+    `);
+      req.flash('success', 'Login Successfully');
       //Redirect To Home
       return res.redirect("/");
     });
@@ -47,7 +55,7 @@ class UserModuel {
   async register(req, res) {
 
     var validate = joi.object().keys({
-      email: joi.string().email.required(),
+      email: joi.string().required(),
       userName: joi.string().required(),
       password: joi.string().required(),
       userType: joi.string().required()
@@ -56,21 +64,23 @@ class UserModuel {
     //Check From 
     if (validate.error) {
       console.log('Register Error:', validate.error);
-      return res.flash('error', 'Please Enter Full Information');
+      req.flash('error', 'Please Enter Full Information');
+      return res.redirect('/register')
     }
 
+    //Connect To DB
     var connection = await db.getConnection();
 
     //Check If Email Is Aleady Used
     if ((await connection.execute(`select count(id) from users where email='${validate.value.email}'`)) > 0) {
-      res.flash('error', 'Email Is Already Used');
-      return
+      req.flash('error', 'Email Is Already Used');
+      return res.redirect('/register')
     }
 
     //Check If User Name Is Aleady Used
     if ((await connection.execute(`select count(id) from users where username='${validate.value.userName}'`)) > 0) {
-      res.flash('error', 'User Name Is Already Used');
-      return
+      req.flash('error', 'User Name Is Already Used');
+      return res.redirect('/register')
     }
 
     //Encrypt Password
@@ -81,7 +91,11 @@ class UserModuel {
 
     //Login 
     req.session.userId = user.Id;
-    return req.session.save(() => {
+    return req.session.save(async () => {
+      await connection.excute(`
+      insert logs (Description,FkUser_Id) values ('${validate.validate.email} Registred',${req.session.userId})
+    `);
+      req.flash('success', 'Registred Account Successfully');
       //Redirect To Home
       return res.redirect("/");
     });
@@ -98,7 +112,6 @@ class UserModuel {
       return res.redirect("/");
     });
   }
-
 }
 
 //Export New User Module Inctance

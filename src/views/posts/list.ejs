@@ -1,0 +1,37 @@
+<%- include('../shared/header') %>
+    <div class="container pt-5">
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Post Date Time</th>
+                    <th>Create By</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for( let index=0; index < posts.length; index++ ) { %>
+                    <tr>
+                        <td>
+                            <%= posts[index].Title %>
+                        </td>
+                        <td>
+                            <%= posts[index].Description %>
+                        </td>
+                        <td>
+                            <%= posts[index].PostDateTime %>
+                        </td>
+                        <td>
+                            <%= posts[index].UserName %>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="/post/update/<%= posts[index].Id %>">Edit</a>
+                            <a class="btn btn-danger" href="/post/delete/<%= posts[index].Id %>">Delete</a>
+                        </td>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+    </div>
+    <%- include('../shared/footer') %>
