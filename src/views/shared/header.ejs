@@ -34,8 +34,23 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+
+                    <% if (isLoggedUser==false) { %>
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                        <% } %>
+                            <% if (isLoggedUser==true) { %>
+                                <% if (loggedUserType=="normal" ) { %>
+                                <li class="nav-item"><a class="nav-link" href="/post/create">Create Post</a></li>
+                                <% } %>
+                               
+                                <li class="nav-item"><a class="nav-link" href="/post">Posts</a></li>
+                                <% if (loggedUserType=="admin" ) { %>
+                                    <li class="nav-item"><a class="nav-link" href="/log">Logs</a></li>
+                                    <% } %>
+                                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                                        <% } %>
+
                 </ul>
             </div>
         </div>

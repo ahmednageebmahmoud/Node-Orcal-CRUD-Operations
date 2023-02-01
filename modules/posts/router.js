@@ -8,7 +8,8 @@ module.exports = app => {
     app.get('/post', postModuel.list)
 
     /** Create Post */
-    app.post('/post', postModuel.create)
+    app.post('/post', mw.checkIfAuth("normal"), postModuel.create)
+    app.get('/post/create', mw.checkIfAuth("normal"),(req, res) => res.render('post/create'))
 
     /** Edit Posts Page  */
     app.get('/post/update/:id', postModuel.getToUpdate)
