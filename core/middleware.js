@@ -10,19 +10,12 @@ module.exports = function () {
         }
     };
 
-    global.mw.loadUserInfo = (req, res, next) => {
+    global.mw.loadUserInfo = async (req, res, next) => {
         req.flash('isLoggedUser', false);
         req.flash('loggedUserType', null);
-        try {
-            
- 
-        if (!req.session.userId) {
-            next();
-            return
-        }
-
-        //Connect To DB
-        db.getConnection().then(async res => {
+        if (req.session.userId) {
+            //Connect To DB
+            var res = await db.getConnection();
             //Insert User
             var user = await connection.execute(`select * from  users where id=${req.session.userId}`)
             if (!user) {
@@ -31,12 +24,13 @@ module.exports = function () {
             }
             req.flash('isLoggedUser', true);
             req.flash('loggedUserType', user.UserType);
-            next();
-        })
-    } catch (error) {
-        next();
-    }
+        }
 
-
+        let data = req.flash();
+        console.log('Flash', data);
+        res.locals.error = data.error?.[0];
+        res.locals.success = data?.success?.[0];
+        res.locals.loggedUserType = data?.loggedUserType?.[0];
+        res.locals.isLoggedUser = data?.isLoggedUser?.[0];
     }
 }

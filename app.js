@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const { join } = require("path");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 
 //Create Express App
@@ -10,13 +11,20 @@ const app = express();
 
 //Tell Express Where Our View Main Path
 app.set("views", process.cwd() + "/src/views");
+
 //Tell Express What View Engin We Need To Use
 app.set("view engine", "ejs");
+
 //To Make Express Detect Static Files Automaticly Without Create Single Router To Each File
 app.use(express.static(join(process.cwd(), "/src/public")));
+
 //For Parsing application/json And Set Linit To Request Body
 app.use(express.json({ limit: "900mb" }));
 app.use(express.urlencoded({ extended: true, limit: "900mb" }));
+
+//Help Us To Send Dynamic Vriables To Ejs To Render It In Page
+app.use(flash());
+
 //Integration Wtih Express Session
 app.use(session({
   name: "OracelDemo",
@@ -25,7 +33,7 @@ app.use(session({
   secret: process.env.SESSIONS_SECRET,
 }));
 
-
+//Pass Out Load User Infom Middleware
 app.use(mw.loadUserInfo);
 
 /** Load User Module */
