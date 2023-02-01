@@ -11,7 +11,7 @@ module.exports = app => {
     app.post('/post', postModuel.create)
 
     /** Edit Posts Page  */
-    app.get('/post/update/:id', postModuel.list)
+    app.get('/post/update/:id', postModuel.getToUpdate)
 
     /** Edit Post */
     app.put('/post', postModuel.update)

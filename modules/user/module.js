@@ -41,7 +41,7 @@ class UserModuel {
     req.session.userId = user.Id;
     return req.session.save(async () => {
       await connection.excute(`
-      insert logs (Description,FkUser_Id) values ('${validate.validate.email} Logged In',${req.session.userId})
+      insert logs (Description,FkUser_Id) values ('Logged In',${req.session.userId})
     `);
       req.flash('success', 'Login Successfully');
       //Redirect To Home
@@ -93,7 +93,7 @@ class UserModuel {
     req.session.userId = user.Id;
     return req.session.save(async () => {
       await connection.excute(`
-      insert logs (Description,FkUser_Id) values ('${validate.validate.email} Registred',${req.session.userId})
+      insert logs (Description,FkUser_Id) values ('Registred',${req.session.userId})
     `);
       req.flash('success', 'Registred Account Successfully');
       //Redirect To Home

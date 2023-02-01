@@ -1,4 +1,4 @@
-<%- include('../shared/header') %>
+<%- include('../shared/header',{title:"List Of Posts"}) %>
     <div class="container pt-5">
         <table class="table table-responsive">
             <thead>
@@ -26,8 +26,12 @@
                             <%= posts[index].UserName %>
                         </td>
                         <td>
-                            <a class="btn btn-primary" href="/post/update/<%= posts[index].Id %>">Edit</a>
-                            <a class="btn btn-danger" href="/post/delete/<%= posts[index].Id %>">Delete</a>
+                            <%# Author User Can Take Action With Any Post Create By Self %>
+                                <%# Admin User Can Take Action With Any Post Create By Any Author %>
+                                    <% if (posts[index].FkUser_Id==loggedUserId || loggedUserType=="admin" ) { %>
+                                        <a class="btn btn-primary" href="/post/update/<%= posts[index].Id %>">Edit</a>
+                                        <a class="btn btn-danger" href="/post/delete/<%= posts[index].Id %>">Delete</a>
+                                        <% } %>
                         </td>
                     </tr>
                     <% } %>

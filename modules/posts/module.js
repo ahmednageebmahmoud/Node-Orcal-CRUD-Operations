@@ -39,11 +39,12 @@ class PostModuel {
 
     //Add Log
     await connection.excute(`
-      insert logs (Description,FkUser_Id) values ('${req.session.user.UserName} Insert New Post With Title ${post.Title}',${req.session.userId})
+      insert logs (Description,FkUser_Id) values ('Insert New Post With Title ${post.Title}',${req.session.userId})
     `);
 
     req.flash('success', 'Post Created Successfully');
-    res.redirect('/post')
+    //Back To Posts Page
+    this.list(req, res);
   }
 
   /**
@@ -77,11 +78,12 @@ class PostModuel {
 
     //Add Log
     await connection.excute(`
-      insert logs (Description,FkUser_Id) values ('${req.session.user.UserName} Update Post ${post.Title}',${req.session.userId})
+      insert logs (Description,FkUser_Id) values ('Update Post ${post.Title}',${req.session.userId})
     `);
 
     req.flash('success', 'Post Updated Successfully');
-    res.redirect('/post')
+    //Back To Posts Page
+    this.list(req, res);
   }
 
   /**
@@ -94,19 +96,33 @@ class PostModuel {
     var post = await connection.excute(`select * from posts where id=id=${req.params.id}`);
     if (!post) {
       req.flash('error', 'Post Is Not Found');
-      return res.render('/post')
+      return this.list(req, res);
     }
 
     await connection.excute(`delete posts where id=${req.params.id}`);
 
     //Add Log
     await connection.excute(`
-      insert logs (Description,FkUser_Id) values ('${req.session.user.UserName} Deleted ${post.Title}',${req.session.userId})
+      insert logs (Description,FkUser_Id) values ('Deleted ${post.Title}',${req.session.userId})
     `);
 
     req.flash("success", "Post Created Successfully");
     //Back To Posts Page
-    res.render('posts/deleted-confirm')
+    this.list(req, res);
+  }
+
+  async getToUpdate(req, res) {
+    //Connect To DB
+    var connection = await db.getConnection();
+
+    var post = await connection.excute(`select * from posts where id=id=${req.params.id}`);
+    if (!post) {
+      req.flash('error', 'Post Is Not Found');
+      //Back To Posts Page
+      return this.list(req, res);
+    }
+
+    res.render('posts/udate', { post })
   }
 }
 
