@@ -11,15 +11,8 @@ module.exports = {
 
   async migrate() {
     
-    console.log(`
-            ======
-                DataBase Migration Is Started
-            ====`);
-            oracledb.getConnection(dbConfig).then(c=> console.log(c)).catch(err=> console.log(err))
-
-            return
-    //Open Connection
-    var connection = await oracledb.getConnection(dbConfig);
+     //Open Connection
+    var connection = await this.getConnection();
 
     //Create Users Table If Not Created
     connection.execute(`IF  NOT EXISTS (SELECT * FROM sys.objects 
@@ -55,4 +48,5 @@ module.exports = {
                 DataBase Migration Is Finshed
             ====`);
   },
+  
 };

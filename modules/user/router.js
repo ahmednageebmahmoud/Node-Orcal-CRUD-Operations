@@ -11,9 +11,10 @@ module.exports= app=>{
     /** Post Login */
     app.post('/login',userModuel.login)
 
+   /** Post Login */
+   app.post('/login',userModuel.login)
 
-
-    /** Get Register  */
-    app.get('/register',(req,res) => res.render('user/register'))
+    /** Get LogOut  */
+    app.get('/logout',userModuel.logout)
     
 };
